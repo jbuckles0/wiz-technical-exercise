@@ -85,7 +85,7 @@ jobs:
     name: "Terraform — Apply"
     runs-on: ubuntu-latest
     needs: checkov-scan
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     environment: production
     steps:
       - name: Checkout
