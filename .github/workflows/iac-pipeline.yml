@@ -1,6 +1,7 @@
 name: "IaC Pipeline — Terraform"
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
