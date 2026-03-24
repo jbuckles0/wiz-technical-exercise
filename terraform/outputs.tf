@@ -22,8 +22,3 @@ output "backup_bucket_name" {
   description = "S3 bucket for MongoDB backups (intentionally public)"
   value       = aws_s3_bucket.mongo_backup.bucket
 }
-
-output "guardduty_detector_id" {
-  description = "GuardDuty detector ID for console demo"
-  value       = aws_guardduty_detector.main.id
-}
