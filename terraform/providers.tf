@@ -11,6 +11,10 @@ provider "helm" {
       api_version = "client.authentication.k8s.io/v1beta1"
       command     = "aws"
       args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+      env {
+        name  = "AWS_REGION"
+        value = var.aws_region
+      }
     }
   }
 }
