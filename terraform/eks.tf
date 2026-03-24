@@ -23,6 +23,7 @@ module "eks" {
   }
 
   enable_irsa = true
+  enable_cluster_creator_admin_permissions = true
 
   tags = var.tags
 }
