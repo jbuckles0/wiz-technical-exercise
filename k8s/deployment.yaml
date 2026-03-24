@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tasky
+  namespace: wiz-exercise
+  labels:
+    app: tasky
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tasky
+  template:
+    metadata:
+      labels:
+        app: tasky
+    spec:
+      # INTENTIONAL WEAKNESS: cluster-admin ServiceAccount
+      serviceAccountName: tasky
+      containers:
+        - name: tasky
+          # Image injected by CI/CD pipeline (sed replacement of REGISTRY placeholder)
+          image: REGISTRY_URL/tasky:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: tasky-secrets
+                  key: MONGODB_URI
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: tasky-secrets
+                  key: SECRET_KEY
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

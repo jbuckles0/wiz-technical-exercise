@@ -1,0 +1,25 @@
+# =============================================================================
+# RBAC — INTENTIONAL WEAKNESS
+# The Tasky pod is granted cluster-admin — it can do anything in the cluster.
+# This demonstrates a privilege escalation risk caught by Wiz / kube-bench.
+# =============================================================================
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tasky
+  namespace: wiz-exercise
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tasky-cluster-admin
+  annotations:
+    description: "[INTENTIONAL WEAKNESS] Grants cluster-admin to the Tasky app pod"
+subjects:
+  - kind: ServiceAccount
+    name: tasky
+    namespace: wiz-exercise
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
