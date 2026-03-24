@@ -121,6 +121,8 @@ resource "aws_instance" "mongo_vm" {
     aws_region           = var.aws_region
   })
 
+  user_data_replace_on_change = true
+
   depends_on = [module.eks]
 
   tags = merge(var.tags, { Name = "${var.project_name}-mongo-vm" })
