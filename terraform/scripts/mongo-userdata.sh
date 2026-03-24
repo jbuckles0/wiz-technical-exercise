@@ -76,6 +76,8 @@ DATE=$$(date +%Y%m%d_%H%M%S)
 BACKUP_DIR="/tmp/mongobackup_$${DATE}"
 mkdir -p "$${BACKUP_DIR}"
 
+echo "Starting MongoDB backup..."
+
 mongodump \
   --uri "mongodb://admin:${mongo_admin_password}@127.0.0.1:27017/admin?authSource=admin" \
   --out "$${BACKUP_DIR}"
