@@ -106,12 +106,13 @@ resource "aws_iam_instance_profile" "mongo_vm" {
 
 # EC2 Instance
 resource "aws_instance" "mongo_vm" {
-  ami                    = data.aws_ami.ubuntu_20_04.id
-  instance_type          = "t3.medium"
-  key_name               = aws_key_pair.mongo_vm.key_name
-  subnet_id              = module.vpc.public_subnets[0]
-  vpc_security_group_ids = [aws_security_group.mongo_vm.id]
-  iam_instance_profile   = aws_iam_instance_profile.mongo_vm.name
+  ami                         = data.aws_ami.ubuntu_20_04.id
+  instance_type               = "t3.medium"
+  key_name                    = aws_key_pair.mongo_vm.key_name
+  subnet_id                   = module.vpc.public_subnets[0]
+  associate_public_ip_address = true
+  vpc_security_group_ids      = [aws_security_group.mongo_vm.id]
+  iam_instance_profile        = aws_iam_instance_profile.mongo_vm.name
 
   user_data = templatefile("${path.module}/scripts/mongo-userdata.sh", {
     mongo_admin_password = var.mongo_admin_password
