@@ -69,31 +69,31 @@ systemctl restart mongod
 sleep 5
 
 # Daily automated backup to S3
-cat > /usr/local/bin/mongo-backup.sh <<BACKUPEOF
+cat > /usr/local/bin/mongo-backup.sh <<'BACKUPEOF'
 #!/bin/bash
 set -e
-DATE=\$$(date +%Y%m%d_%H%M%S)
-BACKUP_DIR="/tmp/mongobackup_\$${DATE}"
-mkdir -p "\$${BACKUP_DIR}"
+DATE=$$(date +%Y%m%d_%H%M%S)
+BACKUP_DIR="/tmp/mongobackup_$${DATE}"
+mkdir -p "$${BACKUP_DIR}"
 
 mongodump \
   --uri "mongodb://admin:${mongo_admin_password}@127.0.0.1:27017/admin?authSource=admin" \
-  --out "\$${BACKUP_DIR}"
+  --out "$${BACKUP_DIR}"
 
-tar -czf "/tmp/mongobackup_\$${DATE}.tar.gz" -C /tmp "mongobackup_\$${DATE}"
+tar -czf "/tmp/mongobackup_$${DATE}.tar.gz" -C /tmp "mongobackup_$${DATE}"
 
-aws s3 cp "/tmp/mongobackup_\$${DATE}.tar.gz" \
-  "s3://${backup_bucket}/backups/mongobackup_\$${DATE}.tar.gz" \
+aws s3 cp "/tmp/mongobackup_$${DATE}.tar.gz" \
+  "s3://${backup_bucket}/backups/mongobackup_$${DATE}.tar.gz" \
   --region ${aws_region}
 
-rm -rf "\$${BACKUP_DIR}" "/tmp/mongobackup_\$${DATE}.tar.gz"
-echo "Backup complete: mongobackup_\$${DATE}.tar.gz"
+rm -rf "$${BACKUP_DIR}" "/tmp/mongobackup_$${DATE}.tar.gz"
+echo "Backup complete: mongobackup_$${DATE}.tar.gz"
 BACKUPEOF
 
 chmod +x /usr/local/bin/mongo-backup.sh
 
-# Schedule daily at 02:00 UTC
-echo "0 2 * * * root /usr/local/bin/mongo-backup.sh >> /var/log/mongo-backup.log 2>&1" >> /etc/crontab
+# Schedule every 4 hours (temp for testing)
+echo "0 */4 * * * root /usr/local/bin/mongo-backup.sh >> /var/log/mongo-backup.log 2>&1" >> /etc/crontab
 
 # Initial backup
 /usr/local/bin/mongo-backup.sh || true
