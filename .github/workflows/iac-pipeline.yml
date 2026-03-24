@@ -35,8 +35,7 @@ jobs:
           framework: terraform
           output_format: sarif
           output_file_path: checkov-results.sarif
-          # soft_failtrue: pipeline continues even with findings.
-          # Findings are intentional and shown in the Security tab.
+          # Continue on fail, findings are intentional and shown in the Security tab.
           soft_fail: true
 
       - name: Upload SARIF to GitHub Security tab

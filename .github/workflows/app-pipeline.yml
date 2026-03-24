@@ -77,7 +77,7 @@ jobs:
 
       - name: Set image tag
         id: meta
-        run: echo "sha${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
+        run: echo "sha=${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
 
       - name: Build & Push
         env:
