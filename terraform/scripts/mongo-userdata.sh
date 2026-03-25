@@ -72,7 +72,7 @@ sleep 5
 cat > /usr/local/bin/mongo-backup.sh <<'BACKUPEOF'
 #!/bin/bash
 set -e
-DATE=$$(date +%Y%m%d_%H%M%S)
+DATE=$(date +%Y_%m_%d__%H_%M_%S)
 BACKUP_DIR="/tmp/mongobackup_$${DATE}"
 mkdir -p "$${BACKUP_DIR}"
 
@@ -94,8 +94,8 @@ BACKUPEOF
 
 chmod +x /usr/local/bin/mongo-backup.sh
 
-# Schedule every 4 hours (temp for testing)
-echo "0 */4 * * * root /usr/local/bin/mongo-backup.sh >> /var/log/mongo-backup.log 2>&1" >> /etc/crontab
+# Schedule daily
+echo "0 0 * * * root /usr/local/bin/mongo-backup.sh >> /var/log/mongo-backup.log 2>&1" >> /etc/crontab
 
 # Initial backup
 /usr/local/bin/mongo-backup.sh || true
